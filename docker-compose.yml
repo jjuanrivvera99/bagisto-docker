@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  bagisto:
+    container_name: bagisto
+    build:
+      context: ./docker/php
+    image: jjuanrivvera99/laravel:bagisto
+    restart: always
+    volumes:
+      - ./:/var/www
+    networks:
+      - bagisto-network
+
+  web:
+    image: nginx:alpine
+    restart: always
+    depends_on: 
+      - bagisto
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/sites/:/etc/nginx/conf.d/
+    networks:
+      - bagisto-network
+
+networks:
+  bagisto-network:
+    driver: bridge
